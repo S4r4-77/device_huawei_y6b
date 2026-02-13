@@ -1,0 +1,9 @@
+[
+  {
+    "repository": "device_huawei_y6b",
+    "target_path": "device/huawei/y6b",
+    "revision": "main",
+    "remote": "github",
+    "account": "S4r4-77"
+  }
+]
