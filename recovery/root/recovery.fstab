@@ -1,0 +1,33 @@
+# TWRP-optimized recovery.fstab for Huawei Y6b (MT6765) – based on your extraction
+
+# Basic partitions
+/boot           emmc    /dev/block/by-name/boot             flags=display="Boot";backup=1;flashimg=1
+/recovery       emmc    /dev/block/by-name/recovery         flags=display="Recovery";backup=1;flashimg=1
+/cache          ext4    /dev/block/by-name/cache            flags=display="Cache"
+
+/metadata       ext4    /dev/block/by-name/metadata         flags=display="Metadata"
+
+/# Logical/dynamic partitions (super partition style – Android 10+)
+/system         ext4    system                              flags=display="System";backup=1;logical
+/vendor         ext4    vendor                              flags=display="Vendor";backup=1;logical
+/product        ext4    product                             flags=display="Product";backup=1;logical
+/odm            ext4    odm                                 flags=display="ODM";backup=1;logical
+
+# Data – F2FS + FBEv2 (file-based encryption) – critical for decryption
+/data           f2fs    /dev/block/by-name/userdata         flags=display="Data";backup=1;encryptable=fileencrypt;fileencryption=aes-256-xts:aes-256-cts:v2;keydirectory=/metadata/vold/metadata_encryption;use_data_mnt=true
+
+# VBMeta (important for verified boot / AVB)
+/vbmeta         emmc    /dev/block/by-name/vbmeta           flags=display="VBMeta";backup=1;flashimg=1
+/vbmeta_system  emmc    /dev/block/by-name/vbmeta_system    flags=display="VBMeta System";backup=1
+/vbmeta_vendor  emmc    /dev/block/by-name/vbmeta_vendor    flags=display="VBMeta Vendor";backup=1
+
+# Huawei/MTK critical partitions (good to keep for backups & NVRAM restore if needed)
+/persist        ext4    /dev/block/by-name/persist         flags=display="Persist";backup=1
+/nvram          emmc    /dev/block/by-name/nvram            flags=display="NVRAM";backup=1
+/nvdata         ext4    /dev/block/by-name/nvdata           flags=display="NVData";backup=1;subpartitionof=/nvram
+/protect_f      ext4    /dev/block/by-name/protect1         flags=display="Protect_F";backup=1
+/protect_s      ext4    /dev/block/by-name/protect2         flags=display="Protect_S";backup=1
+
+# External & OTG storage
+/external_sd    vfat    /dev/block/mmcblk1p1                /dev/block/mmcblk1  flags=display="MicroSD";storage;wipeingui;removable
+/usb_otg        vfat    /dev/block/sda1                     /dev/block/sda      flags=display="USB-OTG";storage;wipeingui;removable
